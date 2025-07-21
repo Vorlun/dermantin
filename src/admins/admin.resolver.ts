@@ -2,16 +2,16 @@ import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import { Admin } from './entities/admin.entity';
 import { CreateAdminInput } from './input/create-admin.input';
 import { UpdateAdminInput } from './input/update-admin.input';
-import { ChangePasswordInput } from './input/change-password.input';
 import { AdminsService } from './admins.service';
+import { ChangeAdminPasswordInput } from './input/change-password.input';
 
 @Resolver(() => Admin)
 export class AdminResolver {
   constructor(private readonly adminService: AdminsService) {}
 
   @Mutation(() => Admin)
-  createAdmin(@Args('createAdminInput') createAdminInput: CreateAdminInput) {
-    return this.adminService.create(createAdminInput);
+  createAdmin(@Args('createAdminInput') input: CreateAdminInput) {
+    return this.adminService.create(input);
   }
 
   @Query(() => [Admin], { name: 'admins' })
@@ -27,9 +27,9 @@ export class AdminResolver {
   @Mutation(() => Admin)
   updateAdmin(
     @Args('id', { type: () => Int }) id: number,
-    @Args('updateAdminInput') updateAdminInput: UpdateAdminInput,
+    @Args('updateAdminInput') input: UpdateAdminInput,
   ) {
-    return this.adminService.update(id, updateAdminInput);
+    return this.adminService.update(id, input);
   }
 
   @Mutation(() => Admin)
@@ -40,8 +40,8 @@ export class AdminResolver {
   @Mutation(() => String)
   changeAdminPassword(
     @Args('id', { type: () => Int }) id: number,
-    @Args('changePasswordInput') changePasswordInput: ChangePasswordInput,
+    @Args('changePasswordInput') input: ChangeAdminPasswordInput
   ) {
-    return this.adminService.changePassword(id, changePasswordInput);
+    return this.adminService.changePassword(id, input);
   }
 }

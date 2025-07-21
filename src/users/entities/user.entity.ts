@@ -34,7 +34,7 @@ registerEnumType(UserRegion, { name: 'UserRegion' });
 registerEnumType(UserLang, { name: 'UserLang' });
 
 @ObjectType()
-@Entity()
+@Entity('users')
 export class User {
   @Field(() => ID)
   @PrimaryGeneratedColumn()
@@ -48,6 +48,13 @@ export class User {
   @Column({ unique: true })
   phone: string;
 
+  @Field()
+  @Column({ unique: true })
+  email: string;
+
+  @Column()
+  password: string;
+
   @Field(() => UserRole)
   @Column({ type: 'enum', enum: UserRole, default: UserRole.CLIENT })
   role: UserRole;
@@ -55,13 +62,6 @@ export class User {
   @Field(() => Boolean)
   @Column({ default: false })
   is_verified: boolean;
-
-  @Field()
-  @Column()
-  email: string;
-
-  @Column()
-  password: string;
 
   @Field(() => UserRegion, { nullable: true })
   @Column({ type: 'enum', enum: UserRegion, nullable: true })

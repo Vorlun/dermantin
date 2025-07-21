@@ -1,16 +1,20 @@
-import { Field, InputType } from "@nestjs/graphql";
-import { MinLength } from "class-validator";
+import { Field, InputType } from '@nestjs/graphql';
+import { ApiProperty } from '@nestjs/swagger';
+import { MinLength } from 'class-validator';
 
-@InputType()
-export class ChangePasswordInput {
-    @Field()
-    oldPassword:string;
+@InputType('ChangeUserPasswordInput')
+export class ChangeUserPasswordInput {
+  @ApiProperty()
+  @Field()
+  oldPassword: string;
 
-    @Field()
-    @MinLength(6)
-    newPassword:string
+  @ApiProperty()
+  @Field()
+  @MinLength(6)
+  newPassword: string;
 
-    @Field()
-    @MinLength(6)
-    confirmNewPassword:string
+  @ApiProperty()
+  @Field()
+  @MinLength(6)
+  confirmNewPassword: string;
 }

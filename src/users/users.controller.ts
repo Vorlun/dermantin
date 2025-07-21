@@ -1,20 +1,10 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  ParseIntPipe,
-  Query,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, Query } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { User } from './entities/user.entity';
 import { CreateUserInput } from './input/create-user.input';
 import { UpdateUserInput } from './input/update-user.input';
-import { ChangePasswordInput } from './input/change-password.input';
+import { ChangeUserPasswordInput } from './input/change-password.input';
 import { ForgotPasswordInput } from './input/forget-password.input';
 import { ResetPasswordInput } from './input/reset-password.input';
 
@@ -26,8 +16,8 @@ export class UsersController {
   @Post()
   @ApiOperation({ summary: 'Create user' })
   @ApiResponse({ status: 201, type: User })
-  create(@Body() createUserInput: CreateUserInput) {
-    return this.usersService.create(createUserInput);
+  create(@Body() input: CreateUserInput) {
+    return this.usersService.create(input);
   }
 
   @Get()
@@ -47,11 +37,8 @@ export class UsersController {
   @Patch(':id')
   @ApiOperation({ summary: 'Update user' })
   @ApiResponse({ status: 200, type: User })
-  update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() updateUserInput: UpdateUserInput,
-  ) {
-    return this.usersService.update(id, updateUserInput);
+  update(@Param('id', ParseIntPipe) id: number, @Body() input: UpdateUserInput) {
+    return this.usersService.update(id, input);
   }
 
   @Delete(':id')
@@ -62,32 +49,25 @@ export class UsersController {
   }
 
   @Post('verify-email')
-  @ApiOperation({ summary: 'Verify email via token' })
-  @ApiResponse({ status: 200, type: String })
+  @ApiOperation({ summary: 'Verify email' })
   verifyEmail(@Query('token') token: string) {
     return this.usersService.verifyEmail(token);
   }
 
   @Post(':id/change-password')
   @ApiOperation({ summary: 'Change user password' })
-  @ApiResponse({ status: 200, type: String })
-  changePassword(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() input: ChangePasswordInput,
-  ) {
+  changePassword(@Param('id', ParseIntPipe) id: number, @Body() input: ChangeUserPasswordInput) {
     return this.usersService.changePassword(id, input);
   }
 
   @Post('forgot-password')
-  @ApiOperation({ summary: 'Send OTP for password reset' })
-  @ApiResponse({ status: 200, type: String })
+  @ApiOperation({ summary: 'Send OTP for reset' })
   forgotPassword(@Body() input: ForgotPasswordInput) {
     return this.usersService.forgotPassword(input);
   }
 
   @Post('reset-password')
   @ApiOperation({ summary: 'Reset password via OTP' })
-  @ApiResponse({ status: 200, type: String })
   resetPassword(@Body() input: ResetPasswordInput) {
     return this.usersService.resetPassword(input);
   }

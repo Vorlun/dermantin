@@ -1,0 +1,132 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Admin {
+  email: String!
+  full_name: String!
+  id: ID!
+  is_active: Boolean!
+  is_creator: Boolean!
+  phone: String!
+  refresh_token: String
+}
+
+input ChangeAdminPasswordInput {
+  confirmNewPassword: String!
+  newPassword: String!
+  oldPassword: String!
+}
+
+input ChangeUserPasswordInput {
+  confirmNewPassword: String!
+  newPassword: String!
+  oldPassword: String!
+}
+
+input CreateAdminInput {
+  email: String!
+  full_name: String!
+  password: String!
+  phone: String!
+}
+
+input CreateUserInput {
+  confirmPassword: String!
+  email: String!
+  full_name: String!
+  lang: UserLang
+  password: String!
+  phone: String!
+  region: UserRegion
+  role: UserRole
+}
+
+input ForgotPasswordInput {
+  email: String!
+}
+
+type Mutation {
+  changeAdminPassword(changePasswordInput: ChangeAdminPasswordInput!, id: Int!): String!
+  changeUserPassword(changeUserPasswordInput: ChangeUserPasswordInput!, id: Int!): String!
+  createAdmin(createAdminInput: CreateAdminInput!): Admin!
+  createUser(createUserInput: CreateUserInput!): User!
+  forgotPassword(forgotPasswordInput: ForgotPasswordInput!): String!
+  removeAdmin(id: Int!): Admin!
+  removeUser(id: Int!): User!
+  resetPassword(resetPasswordInput: ResetPasswordInput!): String!
+  updateAdmin(id: Int!, updateAdminInput: UpdateAdminInput!): Admin!
+  updateUser(id: Int!, updateUserInput: UpdateUserInput!): User!
+  verifyEmail(token: String!): String!
+}
+
+type Query {
+  admin(id: Int!): Admin!
+  admins: [Admin!]!
+  user(id: Int!): User!
+  users: [User!]!
+}
+
+input ResetPasswordInput {
+  confirmNewPassword: String!
+  email: String!
+  newPassword: String!
+  otp: String!
+}
+
+input UpdateAdminInput {
+  email: String
+  full_name: String
+  password: String
+  phone: String
+}
+
+input UpdateUserInput {
+  confirmPassword: String
+  email: String
+  full_name: String
+  lang: UserLang
+  password: String
+  phone: String
+  region: UserRegion
+  role: UserRole
+}
+
+type User {
+  email: String!
+  full_name: String!
+  id: ID!
+  is_verified: Boolean!
+  lang: UserLang
+  phone: String!
+  region: UserRegion
+  role: UserRole!
+}
+
+enum UserLang {
+  EN
+  RU
+  UZ
+}
+
+enum UserRegion {
+  ANDIJAN
+  BUKHARA
+  FERGANA
+  JIZZAKH
+  KARAKALPAKSTAN
+  KASHKADARYA
+  KHOREZM
+  NAMANGAN
+  NAVOI
+  SAMARKAND
+  SIRDARYA
+  SURKHANDARYA
+  TASHKENT
+  TASHKENT_CITY
+}
+
+enum UserRole {
+  CLIENT
+  CUSTOMER
+}
