@@ -1,4 +1,8 @@
-import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
@@ -31,7 +35,10 @@ export class UsersService {
       verificationToken,
     });
     const savedUser = await this.usersRepository.save(user);
-    await this.mailService.sendVerificationEmail(savedUser.email, verificationToken);
+    await this.mailService.sendVerificationEmail(
+      savedUser.email,
+      verificationToken,
+    );
     return savedUser;
   }
 
@@ -59,7 +66,9 @@ export class UsersService {
   }
 
   async verifyEmail(token: string): Promise<string> {
-    const user = await this.usersRepository.findOne({ where: { verificationToken: token } });
+    const user = await this.usersRepository.findOne({
+      where: { verificationToken: token },
+    });
     if (!user) throw new BadRequestException('Invalid token');
     user.is_verified = true;
     user.verificationToken = undefined;
@@ -67,20 +76,26 @@ export class UsersService {
     return 'Email verified successfully';
   }
 
-  async changePassword(id: number, input: ChangeUserPasswordInput): Promise<string> {
+  async changePassword(
+    id: number,
+    input: ChangeUserPasswordInput,
+  ): Promise<string> {
     const user = await this.findOne(id);
     const isValid = await bcrypt.compare(input.oldPassword, user.password);
     if (!isValid) throw new BadRequestException('Old password incorrect');
-    if (input.newPassword !== input.confirmNewPassword) throw new BadRequestException('Passwords do not match');
+    if (input.newPassword !== input.confirmNewPassword)
+      throw new BadRequestException('Passwords do not match');
     user.password = await bcrypt.hash(input.newPassword, 10);
     await this.usersRepository.save(user);
     return 'Password changed successfully';
   }
 
   async forgotPassword(input: ForgotPasswordInput): Promise<string> {
-    const user = await this.usersRepository.findOne({ where: { email: input.email } });
+    const user = await this.usersRepository.findOne({
+      where: { email: input.email },
+    });
     if (!user) throw new NotFoundException('User not found');
-    const otp = (Math.floor(100000 + Math.random() * 900000)).toString();
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
     user.resetPasswordOtp = otp;
     await this.usersRepository.save(user);
     await this.mailService.sendOtpEmail(user.email, otp);
@@ -88,13 +103,35 @@ export class UsersService {
   }
 
   async resetPassword(input: ResetPasswordInput): Promise<string> {
-    const user = await this.usersRepository.findOne({ where: { email: input.email } });
+    const user = await this.usersRepository.findOne({
+      where: { email: input.email },
+    });
     if (!user) throw new NotFoundException('User not found');
-    if (user.resetPasswordOtp !== input.otp) throw new BadRequestException('Invalid OTP');
-    if (input.newPassword !== input.confirmNewPassword) throw new BadRequestException('Passwords do not match');
+    if (user.resetPasswordOtp !== input.otp)
+      throw new BadRequestException('Invalid OTP');
+    if (input.newPassword !== input.confirmNewPassword)
+      throw new BadRequestException('Passwords do not match');
     user.password = await bcrypt.hash(input.newPassword, 10);
     user.resetPasswordOtp = undefined;
     await this.usersRepository.save(user);
     return 'Password reset successfully';
+  }
+
+  async findByEmail(email: string): Promise<User> {
+    const user = await this.usersRepository.findOne({ where: { email } });
+    if (!user) throw new NotFoundException('User not found');
+    return user;
+  }
+
+  async findById(id: number): Promise<User> {
+    return this.findOne(id);
+  }
+
+  async updateRefreshToken(id: number, token: string) {
+    await this.usersRepository.update(id, { refreshToken: token });
+  }
+
+  async removeRefreshToken(id: number) {
+    await this.usersRepository.update(id, { refreshToken: undefined });
   }
 }

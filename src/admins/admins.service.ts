@@ -51,4 +51,23 @@ export class AdminsService {
     await this.adminRepo.save(admin);
     return 'Password successfully updated';
   }
+
+  async findByEmail(email: string): Promise<Admin> {
+  const admin = await this.adminRepo.findOne({ where: { email } });
+  if (!admin) throw new NotFoundException('Admin not found');
+  return admin;
+}
+
+async findById(id: number): Promise<Admin> {
+  return this.findOne(id);
+}
+
+async updateRefreshToken(id: number, token: string) {
+  await this.adminRepo.update(id, { refresh_token: token });
+}
+
+async removeRefreshToken(id: number) {
+  await this.adminRepo.update(id, { refresh_token: null });
+}
+
 }

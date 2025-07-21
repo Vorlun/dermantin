@@ -52,9 +52,17 @@ type Mutation {
   createAdmin(createAdminInput: CreateAdminInput!): Admin!
   createUser(createUserInput: CreateUserInput!): User!
   forgotPassword(forgotPasswordInput: ForgotPasswordInput!): String!
+  refreshAdmin(adminId: Float!, refreshToken: String!): String!
+  refreshUser(refreshToken: String!, userId: Float!): String!
   removeAdmin(id: Int!): Admin!
   removeUser(id: Int!): User!
   resetPassword(resetPasswordInput: ResetPasswordInput!): String!
+  signinAdmin(email: String!, password: String!): String!
+  signinUser(email: String!, password: String!): String!
+  signoutAdmin(adminId: Float!): Boolean!
+  signoutUser(userId: Float!): Boolean!
+  signupAdmin(input: CreateAdminInput!): Admin!
+  signupUser(input: CreateUserInput!): User!
   updateAdmin(id: Int!, updateAdminInput: UpdateAdminInput!): Admin!
   updateUser(id: Int!, updateUserInput: UpdateUserInput!): User!
   verifyEmail(token: String!): String!
