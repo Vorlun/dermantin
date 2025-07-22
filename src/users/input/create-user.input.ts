@@ -1,7 +1,7 @@
-import { InputType, Field } from '@nestjs/graphql';
+import { Field, InputType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsOptional, IsString, IsEmail, MinLength, Matches } from 'class-validator';
-import { UserRole, UserRegion, UserLang } from '../entities/user.entity';
+import { UserLang, UserRegion, UserRole } from 'src/enum/user.enum';
 
 @InputType()
 export class CreateUserInput {
@@ -12,7 +12,6 @@ export class CreateUserInput {
 
   @ApiProperty()
   @Field()
-  @IsString()
   @Matches(/^\+998\d{9}$/, { message: 'Phone must be a valid Uzbekistan number' })
   phone: string;
 

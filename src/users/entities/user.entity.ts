@@ -1,37 +1,7 @@
-import { Field, ObjectType, registerEnumType, ID } from '@nestjs/graphql';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-
-export enum UserRole {
-  CLIENT = 'client',
-  CUSTOMER = 'customer',
-}
-
-export enum UserRegion {
-  TASHKENT_CITY = 'Toshkent shahar',
-  TASHKENT = 'Toshkent viloyati',
-  SAMARKAND = 'Samarqand',
-  BUKHARA = 'Buxoro',
-  ANDIJAN = 'Andijon',
-  FERGANA = 'Fargʻona',
-  NAMANGAN = 'Namangan',
-  SURKHANDARYA = 'Surxondaryo',
-  KASHKADARYA = 'Qashqadaryo',
-  JIZZAKH = 'Jizzax',
-  NAVOI = 'Navoiy',
-  KHOREZM = 'Xorazm',
-  SIRDARYA = 'Sirdaryo',
-  KARAKALPAKSTAN = 'Qoraqalpogʻiston',
-}
-
-export enum UserLang {
-  EN = 'en',
-  RU = 'ru',
-  UZ = 'uz',
-}
-
-registerEnumType(UserRole, { name: 'UserRole' });
-registerEnumType(UserRegion, { name: 'UserRegion' });
-registerEnumType(UserLang, { name: 'UserLang' });
+import { Field, ID, ObjectType, HideField } from '@nestjs/graphql';
+import { UserLang, UserRegion, UserRole } from 'src/enum/user.enum';
+import { History } from 'src/histories/entities/history.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @ObjectType()
 @Entity('users')
@@ -52,6 +22,7 @@ export class User {
   @Column({ unique: true })
   email: string;
 
+  @HideField()
   @Column()
   password: string;
 
@@ -71,12 +42,18 @@ export class User {
   @Column({ type: 'enum', enum: UserLang, default: UserLang.UZ })
   lang: UserLang;
 
+  @HideField()
   @Column({ nullable: true })
   verificationToken?: string;
 
+  @HideField()
   @Column({ nullable: true })
   resetPasswordOtp?: string;
 
+  @HideField()
   @Column({ nullable: true })
   refreshToken?: string;
+
+  @OneToMany(()=>History, history=>history.user)
+  histories: History[]
 }

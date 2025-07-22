@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, ObjectType, HideField } from '@nestjs/graphql';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @ObjectType()
@@ -20,6 +20,7 @@ export class Admin {
   @Column({ unique: true })
   phone: string;
 
+  @HideField()
   @Column()
   password: string;
 
@@ -31,7 +32,7 @@ export class Admin {
   @Column({ default: false })
   is_creator: boolean;
 
-  @Field(() => String, { nullable: true }) 
+  @HideField()
   @Column({ nullable: true, type: 'text' })
   refresh_token?: string | null;
 }

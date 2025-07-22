@@ -9,7 +9,23 @@ type Admin {
   is_active: Boolean!
   is_creator: Boolean!
   phone: String!
-  refresh_token: String
+}
+
+type Advertisement {
+  dermantin: Dermantin!
+  discount_percent: Float!
+  end_date: DateTime!
+  id: ID!
+  start_date: DateTime!
+  status: Boolean!
+  type: String!
+}
+
+type Category {
+  dermantins: [Dermantin!]
+  id: ID!
+  logo: String
+  name: String!
 }
 
 input ChangeAdminPasswordInput {
@@ -31,6 +47,53 @@ input CreateAdminInput {
   phone: String!
 }
 
+input CreateAdvertisementInput {
+  dermantin_id: Int!
+  discount_percent: Int!
+  end_date: DateTime!
+  start_date: DateTime!
+  status: Boolean!
+  type: String!
+}
+
+input CreateCategoryInput {
+  logo: String
+  name: String!
+}
+
+input CreateDermantinImageInput {
+  dermantin_id: Int!
+  image_url: String!
+  is_main: Boolean!
+}
+
+input CreateDermantinInput {
+  category_id: Int!
+  class: String
+  name: String!
+  price: Float!
+  rating: Float
+  store_id: Int!
+}
+
+input CreateHistoryInput {
+  dermantinId: Int!
+  userId: Int!
+}
+
+input CreateReviewInput {
+  dermantin_id: Int!
+  ranking: Float!
+  user_id: Int!
+}
+
+input CreateStoreInput {
+  description: String
+  logo_url: String
+  name: String!
+  region: Region!
+}
+
 input CreateUserInput {
   confirmPassword: String!
   email: String!
@@ -42,19 +105,65 @@ input CreateUserInput {
   role: UserRole
 }
 
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Dermantin {
+  advertisements: [Advertisement!]
+  category: Category!
+  class: String
+  id: ID!
+  images: [DermantinImage!]
+  name: String!
+  price: Float!
+  rating: Float
+  reviews: [Review!]
+  store: Store!
+}
+
+type DermantinImage {
+  dermantin: Dermantin!
+  id: ID!
+  image_url: String!
+  is_main: Boolean!
+}
+
 input ForgotPasswordInput {
   email: String!
+}
+
+type History {
+  dermantin: Dermantin!
+  id: ID!
+  user: User!
+  viewedAt: DateTime!
 }
 
 type Mutation {
   changeAdminPassword(changePasswordInput: ChangeAdminPasswordInput!, id: Int!): String!
   changeUserPassword(changeUserPasswordInput: ChangeUserPasswordInput!, id: Int!): String!
   createAdmin(createAdminInput: CreateAdminInput!): Admin!
+  createAdvertisement(createAdvertisementInput: CreateAdvertisementInput!): Advertisement!
+  createCategory(createCategoryInput: CreateCategoryInput!): Category!
+  createDermantin(createDermantinInput: CreateDermantinInput!): Dermantin!
+  createDermantinImage(createDermantinImageInput: CreateDermantinImageInput!): DermantinImage!
+  createHistory(createHistoryInput: CreateHistoryInput!): History!
+  createReview(createReviewInput: CreateReviewInput!): Review!
+  createStore(createStoreInput: CreateStoreInput!): Store!
   createUser(createUserInput: CreateUserInput!): User!
   forgotPassword(forgotPasswordInput: ForgotPasswordInput!): String!
   refreshAdmin(adminId: Float!, refreshToken: String!): String!
   refreshUser(refreshToken: String!, userId: Float!): String!
   removeAdmin(id: Int!): Admin!
+  removeAdvertisement(id: Int!): Advertisement!
+  removeCategory(id: Int!): Category!
+  removeDermantin(id: Int!): Dermantin!
+  removeDermantinImage(id: Int!): DermantinImage!
+  removeHistory(id: Int!): History!
+  removeReview(id: Int!): Review!
+  removeStore(id: Int!): Store!
   removeUser(id: Int!): User!
   resetPassword(resetPasswordInput: ResetPasswordInput!): String!
   signinAdmin(email: String!, password: String!): String!
@@ -64,6 +173,13 @@ type Mutation {
   signupAdmin(input: CreateAdminInput!): Admin!
   signupUser(input: CreateUserInput!): User!
   updateAdmin(id: Int!, updateAdminInput: UpdateAdminInput!): Admin!
+  updateAdvertisement(id: Int!, updateAdvertisementInput: UpdateAdvertisementInput!): Advertisement!
+  updateCategory(id: Int!, updateCategoryInput: UpdateCategoryInput!): Category!
+  updateDermantin(id: Int!, updateDermantinInput: UpdateDermantinInput!): Dermantin!
+  updateDermantinImage(id: Int!, updateDermantinImageInput: UpdateDermantinImageInput!): DermantinImage!
+  updateHistory(id: Int!, updateHistoryInput: UpdateHistoryinput!): History!
+  updateReview(id: Int!, updateReviewInput: UpdateReviewInput!): Review!
+  updateStore(id: Int!, updateStoreInput: UpdateStoreInput!): Store!
   updateUser(id: Int!, updateUserInput: UpdateUserInput!): User!
   verifyEmail(token: String!): String!
 }
@@ -71,8 +187,39 @@ type Mutation {
 type Query {
   admin(id: Int!): Admin!
   admins: [Admin!]!
+  advertisement(id: Int!): Advertisement!
+  advertisements: [Advertisement!]!
+  categories: [Category!]!
+  category(id: Int!): Category!
+  dermantin(id: Int!): Dermantin!
+  dermantinImage(id: Int!): DermantinImage!
+  dermantinImages: [DermantinImage!]!
+  dermantins: [Dermantin!]!
+  histories: [History!]!
+  history(id: Int!): History!
+  review(id: Int!): Review!
+  reviews: [Review!]!
+  store(id: Int!): Store!
+  stores: [Store!]!
   user(id: Int!): User!
   users: [User!]!
+}
+
+enum Region {
+  ANDIJAN
+  BUKHARA
+  FERGANA
+  JIZZAKH
+  KARAKALPAKSTAN
+  KASHKADARYA
+  KHOREZM
+  NAMANGAN
+  NAVOI
+  SAMARKAND
+  SIRDARYA
+  SURKHANDARYA
+  TASHKENT
+  TASHKENT_CITY
 }
 
 input ResetPasswordInput {
@@ -82,11 +229,76 @@ input ResetPasswordInput {
   otp: String!
 }
 
+type Review {
+  dermantin: Dermantin!
+  id: ID!
+  ranking: Float!
+  user: User!
+}
+
+type Store {
+  dermantins: [Dermantin!]
+  description: String
+  id: ID!
+  logo_url: String
+  name: String!
+  rating: Float
+  region: Region!
+  status: Boolean!
+}
+
 input UpdateAdminInput {
   email: String
   full_name: String
   password: String
   phone: String
+}
+
+input UpdateAdvertisementInput {
+  dermantin_id: Int
+  discount_percent: Int
+  end_date: DateTime
+  start_date: DateTime
+  status: Boolean
+  type: String
+}
+
+input UpdateCategoryInput {
+  logo: String
+  name: String
+}
+
+input UpdateDermantinImageInput {
+  dermantin_id: Int
+  image_url: String
+  is_main: Boolean
+}
+
+input UpdateDermantinInput {
+  category_id: Int
+  class: String
+  name: String
+  price: Float
+  rating: Float
+  store_id: Int
+}
+
+input UpdateHistoryinput {
+  dermantinId: Int
+  userId: Int
+}
+
+input UpdateReviewInput {
+  dermantin_id: Int
+  ranking: Float
+  user_id: Int
+}
+
+input UpdateStoreInput {
+  description: String
+  logo_url: String
+  name: String
+  region: Region
 }
 
 input UpdateUserInput {

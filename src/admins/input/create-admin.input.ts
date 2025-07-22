@@ -16,7 +16,7 @@ export class CreateAdminInput {
 
   @ApiProperty()
   @Field()
-  @IsPhoneNumber()
+  @IsPhoneNumber('UZ')
   phone: string;
 
   @ApiProperty()
